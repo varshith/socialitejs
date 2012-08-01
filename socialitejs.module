@@ -69,6 +69,9 @@ function socialitejs_node_view($node, $view_mode, $language) {
   }
 }
 
+/**
+ * Function to build the links for the given websites
+ */
 function _socialitejs_link($site, &$node) {
 global $base_url;
   // check for an alias on the node
