@@ -1,5 +1,10 @@
-$(document).ready(function()
-	{
+(function ($) {
+
+Drupal.behaviors.socialitejs = {
+  attach: function() {
 		Socialite.load($('body').get());
-		Socialite.activate(element, 'widget');
-	});
+		// Socialite.activate(element, 'widget');
+	}
+};
+}(jQuery));
+

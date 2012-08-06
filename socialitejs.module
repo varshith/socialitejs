@@ -20,7 +20,7 @@ function socialitejs_help($path, $arg) {
       return '<p>'.  t("Socialite.js - integration with Drupal 7") .'</p>';
       break;
   }
-} 
+}
 
 /**
 * Implements hook_menu().
@@ -35,7 +35,7 @@ function socialitejs_menu() {
     'page arguments' => array('socialitejs_form'),
     'access arguments' => array('access administration pages'),
     'type' => MENU_NORMAL_ITEM,
-  );  
+  );
   return $items;
 }
 
@@ -44,7 +44,6 @@ function socialitejs_menu() {
 */
 function socialitejs_preprocess_page(&$variables) {
   if(!empty($variables['node'])){
-     drupal_add_js('misc/jquery.js');
 	 drupal_add_js(drupal_get_path('module', 'socialitejs') . '/js/socialite.js');
 	 drupal_add_js(drupal_get_path('module', 'socialitejs') . '/js/socialitejs.js');
   }
@@ -57,7 +56,7 @@ function socialitejs_node_view($node, $view_mode, $language) {
   if ($view_mode == 'teaser' || ($view_mode == 'full')) {
 	$nodeTypes =  variable_get('socialitejs_node_types', array());
 	if (isset($nodeTypes[$node->type]) && ($nodeTypes[$node->type])) {
-	 $sites = variable_get('socialitejs_sites', array());	
+	 $sites = variable_get('socialitejs_sites', array());
 	foreach ($sites as $site => $enabled) {
 	 if ($enabled) {
           $node->content['socialitejs'][] = _socialitejs_link($site, $node);
@@ -90,14 +89,14 @@ global $base_url;
   $title = $node->title;
   $link = array();
   $box = variable_get('socialitejs_layout', 0);
-  
+
 switch($site)
 {
 case 'facebook':
 	if($box)
-	$options = array('attributes' => array('class' => 'socialite facebook-like', 'data-href' => $url, 'data-layout' => 'box_count'));	
+	$options = array('attributes' => array('class' => 'socialite facebook-like', 'data-href' => $url, 'data-layout' => 'box_count'));
 	else
-	$options = array('attributes' => array('class' => 'socialite facebook-like', 'data-href' => $url));	
+	$options = array('attributes' => array('class' => 'socialite facebook-like', 'data-href' => $url));
 	$link = array(
     '#type'    => 'link',
     '#title'   => 'Facebook',
@@ -147,7 +146,46 @@ case 'googleplus':
   break;
 }
 return $link;
-} 
+}
+
+/**
+ * Function to build the links for the given websites
+ */
+function _socialitejs_views_link($site, $url, $title) {
+  global $base_url;
+  $url = $base_url .'/'. $url;
+  // if the shorten_urls module is installed & enabled, shorten the url being shared.
+  if (module_exists('shorten')) {
+    $url = shorten_url($url);
+  }
+  $link = array();
+switch($site)
+{
+case 'facebook':
+  $options = array('attributes' => array('class' => 'socialite facebook-like', 'data-href' => $url, 'data-layout' => 'button_count'));
+	$link = array(
+    '#type'    => 'link',
+    '#title'   => 'Facebook',
+    '#href'    => urlencode('http://www.facebook.com/sharer.php?u='.$url),
+    '#options' => $options,
+    '#suffix'  => '&nbsp;',
+  );
+	break;
+case 'twitter':
+  $options = array('attributes' => array('class' => 'socialite twitter-share', 'data-url' => $url, 'data-count' => 'none'));
+	$link = array(
+    '#type'    => 'link',
+    '#title'   => 'Twitter',
+    '#href'    => 'http://twitter.com/share',
+    '#options' => $options,
+    '#suffix'  => '&nbsp;',
+  );
+  break;
+}
+$link = drupal_pre_render_link($link);
+return $link['#markup'];
+}
+
 
 /**
 * Page callback: SocialiteJS settings
@@ -167,7 +205,7 @@ function socialitejs_form($form, &$form_state) {
     '#default_value' => variable_get('socialitejs_node_types', array()),
     '#options'       => $node_types,
   );
-  
+
   $form['socialitejs_sites'] = array(
     '#type'          => 'checkboxes',
     '#title'         => t('Widgets'),
