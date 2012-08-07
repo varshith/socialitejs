@@ -1,3 +1,5 @@
 name = SocialiteJS
 description = Socialite.js - integration with Drupal 7
 core = 7.x
+
+stylesheets[all][] = css/socialitejs.css
