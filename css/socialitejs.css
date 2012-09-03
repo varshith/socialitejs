@@ -1,8 +1,8 @@
 .facebook-like {
     background:url(facebook.png) no-repeat scroll 0 0 transparent;
     display:block;
-	height: 30px;
-	width: 70px;
+	height: 25px;
+	width: 65px;
 	text-indent:-9999px;
 	white-space: nowrap;
 }
@@ -10,8 +10,26 @@
 .twitter-share {
     background:url(twitter.png) no-repeat scroll 0 0 transparent;
     display:block;
-	height: 30px;
-	width: 70px;
+	height: 25px;
+	width: 65px;
+	text-indent:-9999px;
+	white-space: nowrap;
+}
+
+.googleplus-one {
+    background:url(googleplus.png) no-repeat scroll 0 0 transparent;
+    display:block;
+	height: 25px;
+	width: 65px;
+	text-indent:-9999px;
+	white-space: nowrap;
+}
+
+.linkedin-share {
+    background:url(linkedin.png) no-repeat scroll 0 0 transparent;
+    display:block;
+	height: 25px;
+	width: 65px;
 	text-indent:-9999px;
 	white-space: nowrap;
 }

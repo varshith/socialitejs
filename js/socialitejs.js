@@ -1,8 +1,15 @@
-$(document).ready(function()
-	{
-	$('.node').one('mouseenter', function()
+(function ($) {
+Drupal.behaviors.socialitejs = {
+  attach: function() {
+  if (Drupal.settings.socialitejs.loading == 'hover'){
+    $('.socialitejs').one('mouseenter', function()
 		{
-		Socialite.load($('body').get());
+		Socialite.load($('.socialitejs').get());
 		});
-		//Socialite.activate(element, 'widget');
-	});
+	}
+  else {
+    Socialite.load($('.socialitejs').get());
+  }	
+ }
+};
+}(jQuery));

@@ -44,9 +44,12 @@ function socialitejs_menu() {
 */
 function socialitejs_preprocess_page(&$variables) {
   if(!empty($variables['node'])){
-     drupal_add_js('misc/jquery.js');
-	 drupal_add_js(drupal_get_path('module', 'socialitejs') . '/js/socialite.js');
-	 drupal_add_js(drupal_get_path('module', 'socialitejs') . '/js/socialitejs.js');
+	if ($path = libraries_get_path('socialitejs')) {
+	  $loading = variable_get('socialitejs_loading', 'page');
+	  drupal_add_js($path . '/socialite.js');
+	  drupal_add_js(drupal_get_path('module', 'socialitejs') . '/js/socialitejs.js');
+	  drupal_add_js(array('socialitejs' => array('loading' => $loading)), 'setting');
+	}
   }
 }
 
@@ -101,7 +104,7 @@ case 'facebook':
 	$link = array(
     '#type'    => 'link',
     '#title'   => 'Facebook',
-    '#href'    => urlencode('http://www.facebook.com/sharer.php?u='.$url.'&amp;t='.$title),
+    '#href'    => 'http://www.facebook.com/sharer.php?u='.$url.'&amp;t='.$title,
     '#options' => $options,
     '#suffix'  => '&nbsp;',
   );
@@ -123,11 +126,11 @@ case 'googleplus':
 	if($box)
 	$options = array('attributes' => array('class' => 'socialite googleplus-one', 'data-href' => $url, 'data-size' => 'tall'));
 	else
-	$options = array('attributes' => array('class' => 'socialite googleplus-one', 'data-href' => $url));
+	$options = array('attributes' => array('class' => 'socialite googleplus-one', 'data-href' => $url, 'data-size' => 'tall', 'data-annotation' => 'inline'));
 	$link = array(
     '#type'    => 'link',
     '#title'   => 'Google+',
-    '#href'    => urlencode('https://plus.google.com/share?url='.$url),
+    '#href'    => 'https://plus.google.com/share?url='.$url,
     '#options' => $options,
     '#suffix'  => '&nbsp;',
   );
@@ -136,11 +139,11 @@ case 'googleplus':
 	if($box)
 	$options = array('attributes' => array('class' => 'socialite linkedin-share', 'data-url' => $url, 'data-counter' => 'top'));
 	else
-	$options = array('attributes' => array('class' => 'socialite linkedin-share', 'data-url' => $url));
+	$options = array('attributes' => array('class' => 'socialite linkedin-share', 'data-url' => $url, 'data-counter' => 'right'));
 	$link = array(
     '#type'    => 'link',
     '#title'   => 'LinkedIn',
-    '#href'    => urlencode('http://www.linkedin.com/shareArticle?mini=true&amp;url='.$url.'&amp;title='.$title),
+    '#href'    => 'http://www.linkedin.com/shareArticle?mini=true&amp;url='.$url.'&amp;title='.$title,
     '#options' => $options,
     '#suffix'  => '&nbsp;',
   );
@@ -163,7 +166,7 @@ function socialitejs_form($form, &$form_state) {
   $form['socialitejs_node_types'] = array(
     '#type'          => 'checkboxes',
     '#title'         => t('Node types'),
-    '#description'   => t('Select node types to display the share links on.'),
+    '#description'   => t('Select the node types to display the share links on.'),
     '#default_value' => variable_get('socialitejs_node_types', array()),
     '#options'       => $node_types,
   );
@@ -171,7 +174,7 @@ function socialitejs_form($form, &$form_state) {
   $form['socialitejs_sites'] = array(
     '#type'          => 'checkboxes',
     '#title'         => t('Widgets'),
-    '#description'   => t('Select share links you would like to enable.'),
+    '#description'   => t('Select the share links you would like to enable.'),
     '#default_value' => variable_get('socialitejs_sites', array()),
     '#options'       => array(
       'facebook'     => t('Facebook'),
@@ -180,14 +183,26 @@ function socialitejs_form($form, &$form_state) {
 	  'linkedin'      => t('LinkedIn'),
     ),
   );
+  
   $form['socialitejs_layout'] = array(
     '#type'          => 'radios',
     '#title'         => t('Layout'),
-    '#description'   => t('Select layout you would like to have for share links.'),
+    '#description'   => t('Select a layout you would like to have for share links.'),
     '#default_value' => variable_get('socialitejs_layout', 0),
     '#options'       => array(
-		'0' => t('Standard'),
+		'0' => t('Button Count'),
 		'1' => t('Box Count'),
+	),
+  );
+  
+    $form['socialitejs_loading'] = array(
+    '#type'          => 'radios',
+    '#title'         => t('Loading method'),
+    '#description'   => t('Select the way you would want to load the socialite buttons.'),
+    '#default_value' => variable_get('socialitejs_loading', 'page'),
+    '#options'       => array(
+		'page' => t('On page load'),
+		'hover' => t('On hover (lazyload)'),
 	),
   );
   return system_settings_form($form);
